@@ -1,10 +1,6 @@
 package me.tdjones.main.view;
 
-import javafx.event.EventType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
@@ -22,12 +18,14 @@ public class RootLayoutController {
     private Label currPlayTime;
     private Label maxPlayTime;
     private SVGPath skipBackButton, playPauseButton, skipForwardButton, volumeButton;
+    private ListView playingList;
 
     public RootLayoutController(List<Feed> feedList) {
 
         rootBorderPane = new BorderPane();
         rootBorderPane.setCenter(createFeedScrollPane(feedList));
         rootBorderPane.setBottom(createBottomHBox());
+        rootBorderPane.setLeft(createLeftVBox());
 
     }
 
@@ -109,12 +107,37 @@ public class RootLayoutController {
             // TODO: Popup a volume slider
         });
 
-        HBox hBox = new HBox();
-        hBox.getChildren().addAll(currPlayingThumbnail, currPlayingFeed, progressNodes,
-                                  skipBackButton,
-                                  playPauseButton, skipForwardButton, volumeButton);
+        HBox hBox = new HBox(currPlayingThumbnail, currPlayingFeed, progressNodes, skipBackButton,
+                             playPauseButton, skipForwardButton, volumeButton);
 
         return hBox;
+    }
+
+    // TODO: Refactor createLeftVBox method.
+    private VBox createLeftVBox(){
+        SVGPath menuButton = new SVGPath();
+        menuButton.setContent("");
+
+        TextField searchField = new TextField();
+        searchField.setOnKeyTyped(event -> {
+            // TODO
+        });
+
+        HBox searchBox = new HBox(menuButton, searchField);
+
+        // TODO
+        GridPane menuGrid = new GridPane();
+        menuGrid.addRow();
+        menuGrid.addRow();
+        menuGrid.addRow();
+
+        playingList = new ListView();
+
+        ScrollPane playList = new ScrollPane(playingList);
+
+        VBox vBox = new VBox();
+        vBox.getChildren().addAll(searchBox, menuGrid, playList);
+        return vBox;
     }
 
 }
