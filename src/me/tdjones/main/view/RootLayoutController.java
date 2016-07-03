@@ -1,12 +1,15 @@
 package me.tdjones.main.view;
 
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.text.TextAlignment;
 import me.tdjones.main.model.Episode;
 import me.tdjones.main.model.Feed;
 import me.tdjones.main.util.MediaPlayerUtil;
@@ -33,6 +36,9 @@ public class RootLayoutController {
     private static final Image speakerIcon = new Image("file:../resources/Speaker_Icon.png");
     private static final Image mutedSpeakerIcon = new Image("file:../resources/Mute_Icon.png");
 
+    private static final int feedThumbnailWidth = 175;
+    private static final int leftVBoxWidth = 200;
+
     public RootLayoutController() {
 
         rootBorderPane = new BorderPane();
@@ -44,8 +50,15 @@ public class RootLayoutController {
 
     private ScrollPane createFeedScrollPane() {
         ScrollPane feedScrollPane = new ScrollPane();
+        feedScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        feedScrollPane.setFitToWidth(true);
+        feedScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         feedTilePane = new TilePane();
+        feedTilePane.setPadding(new Insets(5, 5, 5, 5));
+        feedTilePane.setHgap(5);
+        feedTilePane.setVgap(10);
+
         feedScrollPane.setContent(feedTilePane);
         return feedScrollPane;
     }
@@ -55,8 +68,10 @@ public class RootLayoutController {
         currPlayThumbnail = createThumbnail(MediaPlayerUtil.getCurrPlaying().getThumbnail().getUrl(), 50);
 
         currPlayTitle = new Label(MediaPlayerUtil.getCurrPlaying().getTitle());
+
+        currPlayTitle.setAlignment(Pos.CENTER_LEFT);
         currPlayTitle.setWrapText(true);
-        currPlayTitle.setMaxWidth(150);
+        currPlayTitle.setMaxWidth(leftVBoxWidth - 50);
 
         AnchorPane progressNodes = new AnchorPane();
         // TODO: Remove hard-coded margins
@@ -90,6 +105,7 @@ public class RootLayoutController {
 
         HBox hBox = new HBox(currPlayThumbnail, currPlayTitle, progressNodes, skipBackButton,
                              playPauseButton, skipForwardButton, volumeButton);
+        hBox.setPadding(new Insets(0, 0, 0, 2));
 
         return hBox;
     }
@@ -121,6 +137,7 @@ public class RootLayoutController {
 
         VBox vBox = new VBox();
         vBox.getChildren().addAll(searchBox, menuGrid, playList);
+        vBox.setMaxWidth(leftVBoxWidth);
         return vBox;
     }
 
@@ -145,10 +162,13 @@ public class RootLayoutController {
                 // TODO
             });
 
-            ImageView feedThumbnail = createThumbnail(feed.getThumbnail().getUrl(), 250);
+            ImageView feedThumbnail = createThumbnail(feed.getThumbnail().getUrl(), feedThumbnailWidth);
 
             Label feedTitle = new Label(feed.getTitle());
+            feedTitle.setMaxWidth(175);
             feedTitle.setWrapText(true);
+            feedTitle.setAlignment(Pos.CENTER);
+            feedTitle.setTextAlignment(TextAlignment.CENTER);
 
             vBox.getChildren().addAll(feedThumbnail, feedTitle);
             feedTilePane.getChildren().add(vBox);
