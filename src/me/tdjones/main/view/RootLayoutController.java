@@ -2,6 +2,7 @@ package me.tdjones.main.view;
 
 import javafx.geometry.Bounds;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -13,23 +14,24 @@ import me.tdjones.main.util.TimeUtil;
 
 import java.util.List;
 
-/**
- * Created by Tyler on 7/1/2016.
- */
 public class RootLayoutController {
 
     private final BorderPane rootBorderPane;
     private ImageView currPlayThumbnail;
     private Label currPlayTitle;
     private Label currPlayTime, maxPlayTime;
-    private SVGPath skipBackButton, playPauseButton, skipForwardButton, volumeButton;
     private GridPane playingList;
     private TilePane feedTilePane;
     private ProgressBar progressBar;
-    private String unmutedSVG = "";
-    private String mutedSVG = "";
-    private String pauseSVG = "M 11,10 L 17,10 17,30 11,30 M 20,10 L 26,10 26,30 20,30";
-    private String playSVG = "M 10,10 L 10,30 L 30,20 z";
+
+    private ImageView skipBackButton, skipForwardButton, playPauseButton, volumeButton;
+
+    private static final Image skipBackIcon = new Image("file:../resources/Skip_Back_Icon.png");
+    private static final Image playIcon = new Image("file:../resources/Play_Icon.png");
+    private static final Image pauseIcon = new Image("file:../resources/Pause_Icon.png");
+    private static final Image skipForwardIcon = new Image("file:../resources/Skip_Forward_Icon.png");
+    private static final Image speakerIcon = new Image("file:../resources/Speaker_Icon.png");
+    private static final Image mutedSpeakerIcon = new Image("file:../resources/Mute_Icon.png");
 
     public RootLayoutController() {
 
@@ -50,7 +52,7 @@ public class RootLayoutController {
 
     // TODO: Refactor createBottomHBox method.
     private HBox createBottomHBox() {
-        currPlayThumbnail = createThumbnail(MediaPlayerUtil.getCurrPlaying().getThumbnail(), 50);
+        currPlayThumbnail = createThumbnail(MediaPlayerUtil.getCurrPlaying().getThumbnail().getUrl(), 50);
 
         currPlayTitle = new Label(MediaPlayerUtil.getCurrPlaying().getTitle());
         currPlayTitle.setWrapText(true);
@@ -73,20 +75,16 @@ public class RootLayoutController {
         progressNodes.setBottomAnchor(maxPlayTime, 2.0);
         progressNodes.setRightAnchor(maxPlayTime, 2.0);
 
-        skipBackButton = new SVGPath();
-        skipBackButton.setContent("");
+        skipBackButton = createIcon(skipBackIcon);
         skipBackButton.setOnMouseClicked(event -> handleSkipBackButton());
 
-        playPauseButton = new SVGPath();
-        playPauseButton.setContent("");
+        playPauseButton = createIcon(playIcon);
         playPauseButton.setOnMouseClicked(event -> handlePlayPauseButton());
 
-        skipForwardButton = new SVGPath();
-        skipForwardButton.setContent("");
+        skipForwardButton = createIcon(skipForwardIcon);
         skipForwardButton.setOnMouseClicked(event -> handleSkipForwardButton());
 
-        volumeButton = new SVGPath();
-        volumeButton.setContent(unmutedSVG);
+        volumeButton = createIcon(speakerIcon);
         volumeButton.setOnMouseClicked(event -> handleVolumeButtonClick());
         volumeButton.setOnMouseEntered(event -> handleVolumeButtonEnter());
 
@@ -132,7 +130,7 @@ public class RootLayoutController {
     public void updatePlayingList(List<Episode> playingEpisodes) {
         int i = 0;
         for (Episode episode : playingEpisodes) {
-            ImageView playingListThumbnail = createThumbnail(episode.getThumbnail(), 50);
+            ImageView playingListThumbnail = createThumbnail(episode.getThumbnail().getUrl(), 50);
             Label playingListLabel = new Label(episode.getTitle());
             // TODO: May create incredible amounts of rows, will have to test.
             playingList.addRow(i, playingListThumbnail, playingListLabel);
@@ -147,7 +145,7 @@ public class RootLayoutController {
                 // TODO
             });
 
-            ImageView feedThumbnail = createThumbnail(feed.getThumbnail(), 250);
+            ImageView feedThumbnail = createThumbnail(feed.getThumbnail().getUrl(), 250);
 
             Label feedTitle = new Label(feed.getTitle());
             feedTitle.setWrapText(true);
@@ -172,10 +170,10 @@ public class RootLayoutController {
     private void handlePlayPauseButton() {
         if (MediaPlayerUtil.isPlaying()) {
             MediaPlayerUtil.play();
-            playPauseButton.setContent(pauseSVG);
+            playPauseButton.setImage(pauseIcon);
         } else {
             MediaPlayerUtil.pause();
-            playPauseButton.setContent(playSVG);
+            playPauseButton.setImage(playIcon);
         }
     }
 
@@ -185,9 +183,9 @@ public class RootLayoutController {
 
     private void handleVolumeButtonClick() {
         if (MediaPlayerUtil.toggleMute()) {
-            volumeButton.setContent(mutedSVG);
+            volumeButton.setImage(speakerIcon);
         } else {
-            volumeButton.setContent(unmutedSVG);
+            volumeButton.setImage(mutedSpeakerIcon);
         }
     }
 
@@ -198,15 +196,14 @@ public class RootLayoutController {
     private void handleProgressBarClick(MouseEvent mouseEvent) {
         double mouseX = mouseEvent.getX();
         Bounds bounds = progressBar.getLayoutBounds();
-        double seekTime = ((mouseX - bounds.getMinX()) / bounds.getMaxX()) * 1000
-                            * MediaPlayerUtil.getCurrPlaying().getLength();
+        double seekTime = ((mouseX - bounds.getMinX()) / bounds.getMaxX()) * 1000 * MediaPlayerUtil.getCurrPlaying().getLength();
         MediaPlayerUtil.seek(seekTime);
     }
 
     public void updateEpisodeNodes(){
         Episode episode = MediaPlayerUtil.getCurrPlaying();
 
-        currPlayThumbnail = createThumbnail(episode.getThumbnail(), 50);
+        currPlayThumbnail = createThumbnail(episode.getThumbnail().getUrl(), 50);
         currPlayTitle.setText(episode.getTitle());
         currPlayTime.setText("0:00");
         maxPlayTime.setText(TimeUtil.formatTime(episode.getLength()));
@@ -221,5 +218,17 @@ public class RootLayoutController {
 
     public void updateCurrPlayTime(){
         currPlayTime.setText(TimeUtil.formatTime((int) MediaPlayerUtil.getCurrTime().toSeconds()));
+    }
+
+    public BorderPane getRootBorderPane(){
+        return rootBorderPane;
+    }
+
+    private ImageView createIcon(Image image){
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(45);
+        imageView.setFitHeight(45);
+        imageView.setSmooth(true);
+        return imageView;
     }
 }
