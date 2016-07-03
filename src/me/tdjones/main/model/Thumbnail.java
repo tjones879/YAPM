@@ -1,7 +1,18 @@
 package me.tdjones.main.model;
 
-/**
- * Created by Tyler on 6/30/2016.
- */
+import javax.xml.bind.annotation.XmlAttribute;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class Thumbnail {
+    private String url;
+
+    @XmlAttribute(name = "href")
+    public void setUrl(String url){
+        this.url = url;
+    }
+
+    public String getUrl(){
+        return url;
+    }
 }

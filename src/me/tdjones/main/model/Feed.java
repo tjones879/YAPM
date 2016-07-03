@@ -7,9 +7,7 @@ import javax.xml.bind.annotation.*;
 import java.net.URL;
 import java.util.List;
 
-/**
- * Created by Tyler on 6/30/2016.
- */
+
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Feed {
     @XmlElement(name = "title")
@@ -26,18 +24,22 @@ public class Feed {
     private String author;
     @XmlElement(namespace = Main.itunesNamespace, name = "category")
     private List<String> categories;
-    @XmlAttribute(namespace = Main.itunesNamespace, name = "href")
-    private String thumbnail;
+    @XmlElement(namespace = Main.itunesNamespace, name = "image")
+    private Thumbnail thumbnail;
     @XmlElement(name = "item")
     private List<Episode> episodeList;
 
 
 
-    public String getThumbnail(){
+    public Thumbnail getThumbnail(){
         return thumbnail;
     }
 
     public String getTitle(){
         return title;
+    }
+
+    public List<Episode> getEpisodeList(){
+        return episodeList;
     }
 }
