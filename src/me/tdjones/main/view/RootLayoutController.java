@@ -15,6 +15,8 @@ import me.tdjones.main.model.Feed;
 import me.tdjones.main.util.MediaPlayerUtil;
 import me.tdjones.main.util.TimeUtil;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 public class RootLayoutController {
@@ -29,23 +31,30 @@ public class RootLayoutController {
 
     private ImageView skipBackButton, skipForwardButton, playPauseButton, volumeButton;
 
-    private static final Image skipBackIcon = new Image("file:../resources/Skip_Back_Icon.png");
-    private static final Image playIcon = new Image("file:../resources/Play_Icon.png");
-    private static final Image pauseIcon = new Image("file:../resources/Pause_Icon.png");
-    private static final Image skipForwardIcon = new Image("file:../resources/Skip_Forward_Icon.png");
-    private static final Image speakerIcon = new Image("file:../resources/Speaker_Icon.png");
-    private static final Image mutedSpeakerIcon = new Image("file:../resources/Mute_Icon.png");
+    private static final Image skipBackIcon;
+    private static final Image playIcon;
+    private static final Image pauseIcon;
+    private static final Image skipForwardIcon;
+    private static final Image speakerIcon;
+    private static final Image mutedSpeakerIcon;
 
     private static final int feedThumbnailWidth = 175;
-    private static final int leftVBoxWidth = 200;
+    private static final int leftVBoxWidth = 175;
+
+    static {
+        skipBackIcon = new Image(RootLayoutController.class.getResourceAsStream("../resources/Skip_Back_Icon.png"));
+        playIcon = new Image(RootLayoutController.class.getResourceAsStream("../resources/Play_Icon.png"));
+        pauseIcon = new Image(RootLayoutController.class.getResourceAsStream("../resources/Pause_Icon.png"));
+        skipForwardIcon = new Image(RootLayoutController.class.getResourceAsStream("../resources/Skip_Forward_Icon.png"));
+        speakerIcon = new Image(RootLayoutController.class.getResourceAsStream("../resources/Speaker_Icon.png"));
+        mutedSpeakerIcon = new Image(RootLayoutController.class.getResourceAsStream("../resources/Mute_Icon.png"));
+    }
 
     public RootLayoutController() {
-
         rootBorderPane = new BorderPane();
         rootBorderPane.setCenter(createFeedScrollPane());
         rootBorderPane.setBottom(createBottomHBox());
         rootBorderPane.setLeft(createLeftVBox());
-
     }
 
     private ScrollPane createFeedScrollPane() {
@@ -58,6 +67,8 @@ public class RootLayoutController {
         feedTilePane.setPadding(new Insets(5, 5, 5, 5));
         feedTilePane.setHgap(5);
         feedTilePane.setVgap(10);
+        feedTilePane.setTileAlignment(Pos.CENTER);
+        feedTilePane.setAlignment(Pos.CENTER);
 
         feedScrollPane.setContent(feedTilePane);
         return feedScrollPane;
@@ -65,28 +76,29 @@ public class RootLayoutController {
 
     // TODO: Refactor createBottomHBox method.
     private HBox createBottomHBox() {
-        currPlayThumbnail = createThumbnail(MediaPlayerUtil.getCurrPlaying().getThumbnail().getUrl(), 50);
+        currPlayThumbnail = createThumbnail(MediaPlayerUtil.getCurrPlaying().getThumbnail().getUrl(), 40);
 
         currPlayTitle = new Label(MediaPlayerUtil.getCurrPlaying().getTitle());
-
-        currPlayTitle.setAlignment(Pos.CENTER_LEFT);
         currPlayTitle.setWrapText(true);
-        currPlayTitle.setMaxWidth(leftVBoxWidth - 50);
+        currPlayTitle.setPrefWidth(leftVBoxWidth - 52.5);
 
         AnchorPane progressNodes = new AnchorPane();
         // TODO: Remove hard-coded margins
         progressBar = new ProgressBar();
+        progressBar.setProgress(.5);
         progressBar.setOnMouseClicked(event -> handleProgressBarClick(event));
+
+        currPlayTime = new Label("0:00");
+        maxPlayTime = new Label("0:00");
+        progressNodes.getChildren().addAll(progressBar, currPlayTime, maxPlayTime);
 
         progressNodes.setTopAnchor(progressBar, 2.0);
         progressNodes.setLeftAnchor(progressBar, 2.0);
         progressNodes.setRightAnchor(progressBar, 2.0);
 
-        currPlayTime = new Label();
         progressNodes.setBottomAnchor(currPlayTime, 2.0);
         progressNodes.setLeftAnchor(currPlayTime, 2.0);
 
-        maxPlayTime = new Label();
         progressNodes.setBottomAnchor(maxPlayTime, 2.0);
         progressNodes.setRightAnchor(maxPlayTime, 2.0);
 
@@ -103,9 +115,12 @@ public class RootLayoutController {
         volumeButton.setOnMouseClicked(event -> handleVolumeButtonClick());
         volumeButton.setOnMouseEntered(event -> handleVolumeButtonEnter());
 
-        HBox hBox = new HBox(currPlayThumbnail, currPlayTitle, progressNodes, skipBackButton,
-                             playPauseButton, skipForwardButton, volumeButton);
-        hBox.setPadding(new Insets(0, 0, 0, 2));
+        HBox hBox = new HBox(currPlayThumbnail, currPlayTitle, progressNodes, skipBackButton, playPauseButton,
+                             skipForwardButton, volumeButton);
+        hBox.setHgrow(progressNodes, Priority.ALWAYS);
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(6);
+        hBox.setPadding(new Insets(2, 2, 2, 1.5));
 
         return hBox;
     }
@@ -121,7 +136,7 @@ public class RootLayoutController {
         });
 
         HBox searchBox = new HBox(menuButton, searchField);
-
+        searchBox.setHgrow(searchField, Priority.ALWAYS);
         // TODO
         GridPane menuGrid = new GridPane();
         menuGrid.addRow(0);
@@ -137,7 +152,8 @@ public class RootLayoutController {
 
         VBox vBox = new VBox();
         vBox.getChildren().addAll(searchBox, menuGrid, playList);
-        vBox.setMaxWidth(leftVBoxWidth);
+        vBox.setPrefWidth(leftVBoxWidth);
+        vBox.setFillWidth(true);
         return vBox;
     }
 
@@ -246,8 +262,8 @@ public class RootLayoutController {
 
     private ImageView createIcon(Image image){
         ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(45);
-        imageView.setFitHeight(45);
+        imageView.setFitWidth(25);
+        imageView.setFitHeight(25);
         imageView.setSmooth(true);
         return imageView;
     }
