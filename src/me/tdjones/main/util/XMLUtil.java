@@ -79,14 +79,8 @@ public class XMLUtil {
     }
 
     private static void validateEpisode(Episode episode){
-        try {
-            if (episode.getThumbnail().getUrl() == null) {
-                episode.setThumbnail(episode.getFeed().getThumbnail());
-            } else {
-
-            }
-        } catch (Exception e){
-            e.printStackTrace();
+        if (episode.getThumbnail() == null || episode.getThumbnail().getUrl() == null) {
+            episode.setThumbnail(episode.getFeed().getThumbnail());
         }
     }
 }
