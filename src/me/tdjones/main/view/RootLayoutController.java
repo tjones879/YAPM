@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.TextAlignment;
@@ -15,8 +16,6 @@ import me.tdjones.main.model.Feed;
 import me.tdjones.main.util.MediaPlayerUtil;
 import me.tdjones.main.util.TimeUtil;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
 public class RootLayoutController {
@@ -25,7 +24,7 @@ public class RootLayoutController {
     private ImageView currPlayThumbnail;
     private Label currPlayTitle;
     private Label currPlayTime, maxPlayTime;
-    private GridPane playingList;
+    private GridPane playingListGrid;
     private TilePane feedTilePane;
     private ProgressBar progressBar;
 
@@ -59,9 +58,22 @@ public class RootLayoutController {
 
     private ScrollPane createFeedScrollPane() {
         ScrollPane feedScrollPane = new ScrollPane();
-        feedScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         feedScrollPane.setFitToWidth(true);
+        feedScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         feedScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+        // Provides custom control over mouse-wheel scrolling of scroll pane
+        feedScrollPane.addEventFilter(ScrollEvent.ANY, (event) -> {
+            double pos = feedScrollPane.getVvalue();
+            double posMin = feedScrollPane.getVmin();
+            double posMax = feedScrollPane.getVmax();
+            if (event.getDeltaY() > 0) {
+                feedScrollPane.setVvalue(pos == posMin ? posMin : pos - .225);
+            } else {
+                feedScrollPane.setVvalue(pos == posMax ? posMax : pos + .225);
+            }
+            event.consume();
+        });
 
         feedTilePane = new TilePane();
         feedTilePane.setPadding(new Insets(5, 5, 5, 5));
@@ -137,21 +149,21 @@ public class RootLayoutController {
 
         HBox searchBox = new HBox(menuButton, searchField);
         searchBox.setHgrow(searchField, Priority.ALWAYS);
-        // TODO
+        // TODO: Create buttons for menuGrid
         GridPane menuGrid = new GridPane();
         menuGrid.addRow(0);
         menuGrid.addRow(1);
         menuGrid.addRow(2);
 
-        // TODO: Rename these variables
-        playingList = new GridPane();
+        playingListGrid = new GridPane();
         ColumnConstraints thumbnailColumn = new ColumnConstraints();
         thumbnailColumn.setPercentWidth(25);
-        playingList.getColumnConstraints().add(0, thumbnailColumn);
-        ScrollPane playList = new ScrollPane(playingList);
+        playingListGrid.getColumnConstraints().add(0, thumbnailColumn);
+
+        ScrollPane playListScrollPane = new ScrollPane(playingListGrid);
 
         VBox vBox = new VBox();
-        vBox.getChildren().addAll(searchBox, menuGrid, playList);
+        vBox.getChildren().addAll(searchBox, menuGrid, playListScrollPane);
         vBox.setPrefWidth(leftVBoxWidth);
         vBox.setFillWidth(true);
         return vBox;
@@ -166,7 +178,7 @@ public class RootLayoutController {
             ImageView playingListThumbnail = createThumbnail(episode.getThumbnail().getUrl(), 50);
             Label playingListLabel = new Label(episode.getTitle());
             // TODO: May create incredible amounts of rows, will have to test.
-            playingList.addRow(i, playingListThumbnail, playingListLabel);
+            playingListGrid.addRow(i, playingListThumbnail, playingListLabel);
             i++;
         }
     }
@@ -189,14 +201,6 @@ public class RootLayoutController {
             vBox.getChildren().addAll(feedThumbnail, feedTitle);
             feedTilePane.getChildren().add(vBox);
         }
-    }
-
-    private ImageView createThumbnail(String imageUrl, int imageWidth) {
-        ImageView thumbnail = new ImageView(imageUrl);
-        thumbnail.setPreserveRatio(true);
-        thumbnail.setFitWidth(imageWidth);
-
-        return thumbnail;
     }
 
     private void handleSkipBackButton() {
@@ -260,11 +264,22 @@ public class RootLayoutController {
         return rootBorderPane;
     }
 
+    private ImageView createThumbnail(String imageUrl, int imageWidth) {
+        ImageView thumbnail = new ImageView(imageUrl);
+        thumbnail.setPreserveRatio(true);
+        thumbnail.setSmooth(true);
+        thumbnail.setCache(true);
+        thumbnail.setFitWidth(imageWidth);
+
+        return thumbnail;
+    }
+
     private ImageView createIcon(Image image){
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(25);
         imageView.setFitHeight(25);
         imageView.setSmooth(true);
+        imageView.setCache(true);
         return imageView;
     }
 }
