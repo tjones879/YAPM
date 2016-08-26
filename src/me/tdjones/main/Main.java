@@ -61,6 +61,7 @@ public class Main extends Application{
         rootLayoutController = new RootLayoutController();
 
         scene = new Scene(rootLayoutController.getRootBorderPane(), 900, 600);
+        scene.getStylesheets().add("resources/style.css");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
