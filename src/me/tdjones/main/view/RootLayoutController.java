@@ -98,6 +98,15 @@ public class RootLayoutController {
         // TODO: Remove hard-coded margins
         progressBar = new ProgressBar();
         progressBar.setProgress(.5);
+
+        //progressBar.setPrefHeight(5);
+        //progressBar.setMinHeight(5);
+        //progressBar.setMaxHeight(5);
+        progressBar.setBackground(Background.EMPTY);
+        progressBar.setBorder(Border.EMPTY);
+        progressBar.setOpaqueInsets(Insets.EMPTY);
+        progressBar.setPadding(Insets.EMPTY);
+
         progressBar.setOnMouseClicked(event -> handleProgressBarClick(event));
 
         currPlayTime = new Label("0:00");
@@ -270,6 +279,7 @@ public class RootLayoutController {
         thumbnail.setSmooth(true);
         thumbnail.setCache(true);
         thumbnail.setFitWidth(imageWidth);
+        thumbnail.setFitHeight(imageWidth);
 
         return thumbnail;
     }
