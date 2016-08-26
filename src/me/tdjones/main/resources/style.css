@@ -1,28 +1,18 @@
 .root {
-    -fx-text-base-color: rgb(252.0, 240.0, 237.0);
-    -fx-text-fill: -fx-text-base-color;
-
-     -dark: rgb(47.0, 52.0, 57.0);
-     -fx-background-color: -dark;
-
     /*default font */
     -fx-font-family: 'Helvetica Neue';
-    -fx-font-size: 25.0px;
-    -fx-font-weight: 600;
-    -fx-disabled-opacity: 0.6;
 
-    -flatter-red: rgb(237.0, 68.0, 37.0);
-    -flatter-blue: rgb(0.0, 184.0, 222.0);
+    -blue: rgb(0.0, 184.0, 222.0);
 }
 
 .progress-bar:determinate > .track {
-    -fx-background-color: -dark;
+    -fx-background-color: null;
     -fx-background-radius: 2.0;
     -fx-padding: 0.0;
 }
 
 .progress-bar:determinate > .bar {
-    -fx-background-color: derive(-flatter-blue, -20%);
+    -fx-background-color: derive(-blue, -20%);
     -fx-background-radius: 2.0;
     -fx-background-insets: 0.0;
     -fx-border-width: 0.0;
@@ -30,7 +20,7 @@
 }
 
 .progress-bar:indeterminate > .bar {
-    -fx-background-color: derive(-flatter-blue, 50.0%);
+    -fx-background-color: derive(-blue, 50.0%);
     -fx-background-radius: 2.0;
     -fx-background-insets: 0.0;
     -fx-border-width: 0.0;
