@@ -99,13 +99,9 @@ public class RootLayoutController {
         progressBar = new ProgressBar();
         progressBar.setProgress(.5);
 
-        //progressBar.setPrefHeight(5);
-        //progressBar.setMinHeight(5);
-        //progressBar.setMaxHeight(5);
-        progressBar.setBackground(Background.EMPTY);
-        progressBar.setBorder(Border.EMPTY);
-        progressBar.setOpaqueInsets(Insets.EMPTY);
-        progressBar.setPadding(Insets.EMPTY);
+        progressBar.setPrefHeight(3);
+        progressBar.setMinHeight(3);
+        progressBar.setMaxHeight(3);
 
         progressBar.setOnMouseClicked(event -> handleProgressBarClick(event));
 
@@ -113,15 +109,15 @@ public class RootLayoutController {
         maxPlayTime = new Label("0:00");
         progressNodes.getChildren().addAll(progressBar, currPlayTime, maxPlayTime);
 
-        progressNodes.setTopAnchor(progressBar, 2.0);
-        progressNodes.setLeftAnchor(progressBar, 2.0);
-        progressNodes.setRightAnchor(progressBar, 2.0);
+        progressNodes.setBottomAnchor(progressBar, 22.);
+        progressNodes.setLeftAnchor(progressBar, 2.);
+        progressNodes.setRightAnchor(progressBar, 2.);
 
-        progressNodes.setBottomAnchor(currPlayTime, 2.0);
-        progressNodes.setLeftAnchor(currPlayTime, 2.0);
+        progressNodes.setBottomAnchor(currPlayTime, 2.);
+        progressNodes.setLeftAnchor(currPlayTime, 2.);
 
-        progressNodes.setBottomAnchor(maxPlayTime, 2.0);
-        progressNodes.setRightAnchor(maxPlayTime, 2.0);
+        progressNodes.setBottomAnchor(maxPlayTime, 2.);
+        progressNodes.setRightAnchor(maxPlayTime, 2.);
 
         skipBackButton = createIcon(skipBackIcon);
         skipBackButton.setOnMouseClicked(event -> handleSkipBackButton());
