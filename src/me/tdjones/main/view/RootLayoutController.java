@@ -13,6 +13,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 import me.tdjones.main.model.Episode;
 import me.tdjones.main.model.Feed;
 import me.tdjones.main.util.MediaPlayerUtil;
@@ -70,6 +71,14 @@ public class RootLayoutController {
                 updateVolumeButton(newValue);
             }
         });
+
+        MediaPlayerUtil.getMediaPlayer().currentTimeProperty().addListener(new ChangeListener<Duration>() {
+            @Override
+            public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+                updateProgressBar((int) newValue.toSeconds());
+            }
+        });
+
     }
 
     private ScrollPane createFeedScrollPane() {
@@ -276,11 +285,14 @@ public class RootLayoutController {
         maxPlayTime.setText(TimeUtil.formatTime(episode.getLength()));
     }
 
-    public void updateProgressBar(){
-            int currTime = (int) MediaPlayerUtil.getCurrTime().toSeconds();
-            long maxTime = MediaPlayerUtil.getCurrPlaying().getLength();
-            progressBar.setProgress(currTime / maxTime);
-            currPlayTime.setText(TimeUtil.formatTime(currTime));
+    /**
+     * Updates the media progress bar.
+     * @param currTime The current time of the playing media in seconds.
+     */
+    private void updateProgressBar(int currTime){
+        double maxTime = MediaPlayerUtil.getMediaPlayer().getTotalDuration().toSeconds();
+        progressBar.setProgress(currTime / maxTime);
+        currPlayTime.setText(TimeUtil.formatTime(currTime));
     }
 
     public void updateCurrPlayTime(){

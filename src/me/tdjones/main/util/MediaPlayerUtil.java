@@ -33,6 +33,10 @@ public class MediaPlayerUtil {
         mediaPlayer = mp;
     }
 
+    public static MediaPlayer getMediaPlayer(){
+        return mediaPlayer;
+    }
+
     public static void toggleMute(){
         isMuted.set(!isMuted.get());
         mediaPlayer.setMute(isMuted.get());
