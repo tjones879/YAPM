@@ -1,5 +1,6 @@
 package me.tdjones.main.util;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -7,9 +8,9 @@ import me.tdjones.main.model.Episode;
 
 public class MediaPlayerUtil {
     private static Episode currPlaying;
-    private static boolean isMuted;
     private static MediaPlayer mediaPlayer;
-    private static boolean isPlaying;
+    private static SimpleBooleanProperty isMuted = new SimpleBooleanProperty(false);
+    private static SimpleBooleanProperty isPlaying = new SimpleBooleanProperty(false);
 
 
     public static void setCurrPlaying(Episode episode){
@@ -20,34 +21,40 @@ public class MediaPlayerUtil {
         return currPlaying;
     }
 
+    public static SimpleBooleanProperty getIsPlaying(){
+        return isPlaying;
+    }
+
+    public static SimpleBooleanProperty getIsMuted(){
+        return isMuted;
+    }
+
     public static void setMediaPlayer(MediaPlayer mp){
         mediaPlayer = mp;
     }
 
-    public static boolean toggleMute(){
-        mediaPlayer.setMute(!isMuted);
-        isMuted = !isMuted;
-        return isMuted;
+    public static void toggleMute(){
+        isMuted.set(!isMuted.get());
+        mediaPlayer.setMute(isMuted.get());
     }
 
-    
     public static boolean handlePlayPause(){
-        if (isPlaying){
+        if (isPlaying.get()){
             pause();
         } else {
             play();
         }
-        return isPlaying;
+        return isPlaying.get();
     }
 
     public static void play(){
         mediaPlayer.play();
-        isPlaying = true;
+        isPlaying.set(true);
     }
 
     public static void pause(){
         mediaPlayer.pause();
-        isPlaying = false;
+        isPlaying.set(false);
     }
 
     public static void skipBack(){

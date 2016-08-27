@@ -1,5 +1,7 @@
 package me.tdjones.main.view;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -54,6 +56,20 @@ public class RootLayoutController {
         rootBorderPane.setCenter(createFeedScrollPane());
         rootBorderPane.setBottom(createBottomHBox());
         rootBorderPane.setLeft(createLeftVBox());
+
+        MediaPlayerUtil.getIsPlaying().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                updatePlayPauseButton(newValue);
+            }
+        });
+
+        MediaPlayerUtil.getIsMuted().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                updateVolumeButton(newValue);
+            }
+        });
     }
 
     private ScrollPane createFeedScrollPane() {
@@ -213,11 +229,7 @@ public class RootLayoutController {
     }
 
     private void handlePlayPauseButton() {
-        if (MediaPlayerUtil.handlePlayPause()) {
-            playPauseButton.setImage(pauseIcon);
-        } else {
-            playPauseButton.setImage(playIcon);
-        }
+        MediaPlayerUtil.handlePlayPause();
     }
 
     private void handleSkipForwardButton() {
@@ -225,11 +237,7 @@ public class RootLayoutController {
     }
 
     private void handleVolumeButtonClick() {
-        if (MediaPlayerUtil.toggleMute()) {
-            volumeButton.setImage(speakerIcon);
-        } else {
-            volumeButton.setImage(mutedSpeakerIcon);
-        }
+        MediaPlayerUtil.toggleMute();
     }
 
     private void handleVolumeButtonEnter() {
@@ -241,6 +249,22 @@ public class RootLayoutController {
         Bounds bounds = progressBar.getLayoutBounds();
         double seekTime = ((mouseX - bounds.getMinX()) / bounds.getMaxX()) * 1000 * MediaPlayerUtil.getCurrPlaying().getLength();
         MediaPlayerUtil.seek(seekTime);
+    }
+
+    private void updatePlayPauseButton(Boolean nowPlaying){
+        if(nowPlaying){
+            playPauseButton.setImage(pauseIcon);
+        }else {
+            playPauseButton.setImage(playIcon);
+        }
+    }
+
+    private void updateVolumeButton(Boolean nowMuted){
+        if(nowMuted){
+            volumeButton.setImage(mutedSpeakerIcon);
+        }else {
+            volumeButton.setImage(speakerIcon);
+        }
     }
 
     public void updateEpisodeNodes(){
