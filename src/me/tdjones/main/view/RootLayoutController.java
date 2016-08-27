@@ -76,6 +76,7 @@ public class RootLayoutController {
             @Override
             public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
                 updateProgressBar((int) newValue.toSeconds());
+                updateCurrPlayTime((int) newValue.toSeconds());
             }
         });
 
@@ -292,11 +293,10 @@ public class RootLayoutController {
     private void updateProgressBar(int currTime){
         double maxTime = MediaPlayerUtil.getMediaPlayer().getTotalDuration().toSeconds();
         progressBar.setProgress(currTime / maxTime);
-        currPlayTime.setText(TimeUtil.formatTime(currTime));
     }
 
-    public void updateCurrPlayTime(){
-        currPlayTime.setText(TimeUtil.formatTime((int) MediaPlayerUtil.getCurrTime().toSeconds()));
+    public void updateCurrPlayTime(int currTime){
+        currPlayTime.setText(TimeUtil.formatTime(currTime));
     }
 
     public BorderPane getRootBorderPane(){
