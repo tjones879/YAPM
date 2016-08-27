@@ -213,11 +213,9 @@ public class RootLayoutController {
     }
 
     private void handlePlayPauseButton() {
-        if (MediaPlayerUtil.isPlaying()) {
-            MediaPlayerUtil.play();
+        if (MediaPlayerUtil.handlePlayPause()) {
             playPauseButton.setImage(pauseIcon);
         } else {
-            MediaPlayerUtil.pause();
             playPauseButton.setImage(playIcon);
         }
     }

@@ -53,6 +53,7 @@ public class Main extends Application{
         }
         MediaPlayerUtil.setCurrPlaying(feed.getEpisodeList().get(0));
         mediaPlayer = new MediaPlayer(new Media("http://feeds.soundcloud.com/stream/271124645-beautiful-anonymous-17-early-onset.mp3"));
+        MediaPlayerUtil.setMediaPlayer(mediaPlayer);
         initLayout();
         rootLayoutController.updateFeedTilePane(subscriptions);
     }

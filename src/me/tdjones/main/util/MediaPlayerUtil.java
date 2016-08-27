@@ -30,16 +30,24 @@ public class MediaPlayerUtil {
         return isMuted;
     }
 
-    public static boolean isPlaying(){
-        return isPlaying();
+    
+    public static boolean handlePlayPause(){
+        if (isPlaying){
+            pause();
+        } else {
+            play();
+        }
+        return isPlaying;
     }
 
     public static void play(){
         mediaPlayer.play();
+        isPlaying = true;
     }
 
     public static void pause(){
         mediaPlayer.pause();
+        isPlaying = false;
     }
 
     public static void skipBack(){
