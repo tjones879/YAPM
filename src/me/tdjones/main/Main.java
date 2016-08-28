@@ -72,7 +72,7 @@ public class Main extends Application{
 
     private static void importSubscriptions(){
         subscriptions = new ArrayList<>();
-        List<URL> RSSUrls = XMLUtil.parseOPML(subscriptionDir);
+        List<URL> RSSUrls = XMLUtil.parseSubscriptions(subscriptionDir);
         for (URL feedURL : RSSUrls){
             subscriptions.add(XMLUtil.parseRSS(feedURL));
         }

@@ -22,7 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class XMLUtil {
-    public static List<URL> parseOPML(File OPMLFile){
+    /**
+     * Parses an xml file following opml formatting. The file must have an 'outline' element for each subscription with
+     * an 'xmlUrl' attribute pointing to an RSS feed.
+     * @param OPMLFile The file to be parsed.
+     * @return A list of URL's pointing to each feed that can each be parsed by parseRSS.
+     */
+    public static List<URL> parseSubscriptions(File OPMLFile){
         List<URL> feedURLList = new ArrayList<>();
         try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -50,6 +56,14 @@ public class XMLUtil {
         return feedURLList;
     }
 
+    /**
+     * Unmarshals an RSS feed into RSS, Feed, and Episode objects. Tags are only parsed for files using the itunes
+     * namespace.
+     * @param feedURL A URL pointing to a properly styled ATOM/RSS XML file.
+     * @return Returns a feed otherwise. Returns null if a JAXBException or IOException is caught.
+     * @see Feed
+     * @see Episode
+     */
     public static Feed parseRSS(URL feedURL){
         try {
             JAXBContext jc = JAXBContext.newInstance(RSS.class);
