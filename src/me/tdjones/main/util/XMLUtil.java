@@ -1,11 +1,13 @@
 package me.tdjones.main.util;
 
+import com.sun.istack.internal.Nullable;
+
 import me.tdjones.main.model.Episode;
 import me.tdjones.main.model.Feed;
 import me.tdjones.main.model.RSS;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -15,6 +17,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -64,6 +67,7 @@ public class XMLUtil {
      * @see Feed
      * @see Episode
      */
+    @Nullable
     public static Feed parseRSS(URL feedURL){
         try {
             JAXBContext jc = JAXBContext.newInstance(RSS.class);

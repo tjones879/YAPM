@@ -11,7 +11,7 @@ public class TimeUtil {
         }
     }
 
-    public static int parseTime(String length){
+    public static int parseTimeStamp(String length){
         String[] values = length.split(":");
         int hours = 0;
         int minutes = 0;

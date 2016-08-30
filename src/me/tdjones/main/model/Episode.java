@@ -1,14 +1,13 @@
 package me.tdjones.main.model;
 
 import me.tdjones.main.Main;
-import me.tdjones.main.util.TimeUtil;
+
+import me.tdjones.main.util.LengthAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import java.net.MalformedURLException;
-import java.net.URL;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class Episode {
@@ -18,7 +17,9 @@ public class Episode {
     private String description;
     private Thumbnail thumbnail;
     private Feed feed;
-    private int length;
+    @XmlElement(namespace = Main.itunesNamespace, name = "duration", required = true)
+    @XmlJavaTypeAdapter(LengthAdapter.class)
+    private Integer length;
     private boolean isExplicit;
     @XmlElement(name = "enclosure")
     private Enclosure enclosure;
@@ -37,24 +38,15 @@ public class Episode {
         return title;
     }
 
-    @XmlElement(namespace = Main.itunesNamespace, name = "duration")
-    public void setLength(String length){
-        if (length.contains(":")){
-            this.length = TimeUtil.parseTime(length);
-        } else {
-            this.length = Integer.parseInt(length);
-        }
-    }
-
     public int getLength(){
         return this.length;
     }
 
     @XmlElement(namespace = Main.itunesNamespace, name = "explicit")
     public void setIsExplicit(String isExplicit){
-        if (isExplicit == "yes"){
+        if (isExplicit.equalsIgnoreCase("yes")){
             this.isExplicit = true;
-        }else if (isExplicit == "no" || isExplicit == "clean"){
+        }else if (isExplicit.equalsIgnoreCase("no") || isExplicit.equalsIgnoreCase("clean")){
             this.isExplicit = false;
         }
     }
