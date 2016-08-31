@@ -1,8 +1,6 @@
 package me.tdjones.main.model;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class Thumbnail {
     private String url;

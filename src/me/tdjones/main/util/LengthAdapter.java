@@ -2,9 +2,6 @@ package me.tdjones.main.util;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-/**
- * Created by Tyler on 08/30/2016.
- */
 public class LengthAdapter extends XmlAdapter<String, Integer> {
 
     @Override

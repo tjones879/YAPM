@@ -1,12 +1,9 @@
 package me.tdjones.main.model;
 
-import com.sun.xml.internal.txw2.annotation.XmlNamespace;
 import me.tdjones.main.Main;
 
 import javax.xml.bind.annotation.*;
-import java.net.URL;
 import java.util.List;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Feed {
